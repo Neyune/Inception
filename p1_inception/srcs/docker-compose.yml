@@ -1,4 +1,4 @@
-version: "3.5"
+version: '3'
 services:
   mysql:
     image: mariadb
@@ -10,6 +10,8 @@ services:
       MYSQL_USER: user_name
       MYSQL_PASSWORD: user_pass
     restart: always
+    networks:
+        - inception
   wordpress:
     image: wordpress:php7.3-fpm-alpine
     volumes:
@@ -23,15 +25,24 @@ services:
       WORDPRESS_DB_USER: user_name
       WORDPRESS_DB_PASSWORD: user_pass
       WORDPRESS_TABLE_PREFIX: wp_
-    links:
-      - mysql
     restart: always
+    networks:
+        - inception
   nginx:
-    image: nginx:alpine
+    build: requirements/nginx
+    image: nginx
     volumes:
-      - nginx:/etc/nginx/conf.d
+      - ./requirements/nginx:/etc/nginx/conf.d
       - /data/html:/var/www/html
     ports:
-      - 8080:80
-    links:
+      - "443:443"
+    depends_on:
       - wordpress
+    networks:
+        - inception
+
+networks:
+  inception:
+    driver: bridge
+# volumes:
+#   nginx: {} search global volume

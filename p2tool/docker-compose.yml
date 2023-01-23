@@ -13,8 +13,7 @@ services:
     networks:
         - inception
   wordpress:
-    build: requirements/wordpress
-    image: wordpress
+    image: wordpress:php7.3-fpm-alpine
     volumes:
       - /data/html:/var/www/html
     depends_on:

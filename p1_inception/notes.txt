@@ -13,3 +13,9 @@ sudo useradd -u 82 www-data
 
 sudo mkdir -p /data/html
 sudo chown -R www-data:www-data /data/html
+
+
+
+PB actuel 
+502 Bad gateway avec https
+400 The plain HTTP request was sent to HTTPS port sur 443 Bad request

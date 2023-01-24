@@ -15,15 +15,17 @@ RUN apt -y update && apt install php-fpm php-mysql -y && \
 RUN userdel www-data && useradd -u 82 www-data && \
     mkdir -p /var/www/html && \
     chown -R www-data:www-data /var/www/html && \
-    # chown -R www-data:www-data /var/log/php && \
-    chmod -R 755 /var/www/html 
-    # chmod -R 755 /var/log/php
+    # chown -R www-data:www-data /var/log/ && \
+    chmod -R 755 /var/www/html
+    # chmod -R 755 /var/log/php/7.3/
 
 RUN wp core download --allow-root
 
-COPY ./ereali.conf /etc/php/7.3/fpm/pool.d/ereali.conf
+COPY ereali.conf /etc/php/7.3/fpm/pool.d/
+# COPY wp-config.php /var/www/wordpress/wp-config.php 
 USER www-data:www-data
 
 WORKDIR /var/www/html
 
-CMD ["sh","wp-script.sh"] 
+COPY wp-script.sh /wp-script.sh
+CMD ["/wp-script.sh"] 

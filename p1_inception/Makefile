@@ -5,4 +5,7 @@ re: all
 clean:
 	docker ps -aq | xargs docker stop | xargs docker rm
 	docker-compose -f srcs/docker-compose.yml down --rmi all
+fclean: clean
+	rm -rf /data/html
+	
 .PHONY: all re clean

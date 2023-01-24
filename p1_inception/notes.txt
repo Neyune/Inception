@@ -19,3 +19,7 @@ sudo chown -R www-data:www-data /data/html
 PB actuel 
 502 Bad gateway avec https
 400 The plain HTTP request was sent to HTTPS port sur 443 Bad request
+
+/usr/share/doc/php-fpm -> place php-fpm
+/usr/sbin/php-fpm7.3 -> php-fpm7.3
+both executable

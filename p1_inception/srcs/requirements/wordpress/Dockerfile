@@ -13,10 +13,11 @@ RUN apt -y update && apt install php-fpm php-mysql -y && \
  && chmod +x wp-cli.phar && mv wp-cli.phar /usr/local/bin/wp
 
 RUN userdel www-data && useradd -u 82 www-data && \
-    mkdir -p /var/www/html && \
-    chown -R www-data:www-data /var/www/html && \
+    mkdir -p /var/www/html /var/run/php && \
+    chown -R www-data:www-data /var/www/html /var/run/php && \
     # chown -R www-data:www-data /var/log/ && \
-    chmod -R 755 /var/www/html
+    chmod -R 755 /var/www/html &&
+    chmod -R 777 /var/run/php
     # chmod -R 755 /var/log/php/7.3/
 
 RUN wp core download --allow-root

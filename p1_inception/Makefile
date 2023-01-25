@@ -1,11 +1,11 @@
 all:
 	docker-compose -f srcs/docker-compose.yml -p inception up --build -d
-re: all
+re: fclean all 
 
 clean:
 	docker ps -aq | xargs docker stop | xargs docker rm
 	docker-compose -f srcs/docker-compose.yml down --rmi all
 fclean: clean
 	rm -rf /data/html
-	
-.PHONY: all re clean
+
+.PHONY: all re clean fclean

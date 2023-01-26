@@ -5,7 +5,7 @@ FROM debian:buster
 
 #The EXPOSE instruction does not actually publish the port. It functions as a type of documentation between the person who builds the image and the person who runs the container, about which ports are intended to be published.
 EXPOSE 9000
-
+WORKDIR /var/www/html/
 
 RUN apt -y update && apt install php-fpm php-mysql -y && \
  apt-get -y update && apt-get install php-curl php-gd php-intl php-mbstring php-soap php-xml php-xmlrpc php-zip -y curl && \
@@ -22,9 +22,11 @@ RUN userdel www-data && useradd -u 82 www-data && \
     chmod -R 777 /var/log/
 
 
-RUN wp core download --path='/var/www/html' --allow-root
+#RUN wp core download --force --path='/var/www/html' --allow-root
 
-COPY ereali.conf /etc/php/7.3/fpm/pool.d/
+RUN mkdir /root/html && wp core download --force --path='/root/html' --allow-root
+
+COPY www.conf /etc/php/7.3/fpm/pool.d/www.conf
 
 # COPY wp-config.php /var/www/html/
 
@@ -34,4 +36,4 @@ COPY ereali.conf /etc/php/7.3/fpm/pool.d/
 
 
 COPY ./wp-script.sh /usr/bin/wp-script.sh
-CMD ["wp-script.sh"] 
+CMD ["wp-script.sh"]

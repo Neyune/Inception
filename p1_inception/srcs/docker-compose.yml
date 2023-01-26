@@ -9,8 +9,9 @@ services:
     # expose:
     #   - "3306"
     image: mariadb
+    expose: [3306]
     volumes:
-      - /data/mysql:/var/lib/mysql
+      - ./data/mysql:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: mysql_root_pass
       MYSQL_DATABASE: db_name
@@ -26,7 +27,7 @@ services:
     image: wordpress
     # container_name: wordpress
     volumes:
-      - /data/html:/var/www/html
+      - ./data/html:/var/www/html
     expose:
       - "9000"
     # image: wordpress:php7.3-fpm-alpine
@@ -49,7 +50,7 @@ services:
     image: nginx
     volumes:
       - ./requirements/nginx:/etc/nginx/conf.d
-      - /data/html:/var/www/html
+      - ./data/html:/var/www/html
     ports:
       - "443:443"
     depends_on:

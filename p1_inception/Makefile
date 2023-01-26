@@ -6,6 +6,6 @@ clean:
 	docker ps -aq | xargs docker stop | xargs docker rm
 	docker-compose -f srcs/docker-compose.yml down --rmi all
 fclean: clean
-	rm -rf /data/html
+	docker system prune -f
 
 .PHONY: all re clean fclean

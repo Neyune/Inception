@@ -1,16 +1,17 @@
 #!/bin/bash
 touch /tmp_file
-chmod 700 /tmp_file
+chmod 755 /tmp_file
 
-systemctl service mysql start
+service mysql start
 
 cat << EOF > /tmp_file
-CREATE DATABASE wordpress DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-GRANT ALL ON wordpress.* TO 'wordpress_user'@'localhost' IDENTIFIED BY 'password';
+CREATE DATABASE db_name DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+GRANT ALL ON *.* TO 'user_name'@'localhost' IDENTIFIED BY 'user_pass';
 FLUSH PRIVILEGES;
 EOF
-mariadb -u root < /tmp_file
+mysql < /tmp_file
 # creer un fichier temporaire dans lequel on met les instruction mysql 
 # les rediriger dans mysql
+service mysql stop
 
-exec /usr/bin/mysqld --user=mysql 
+exec mysqld --user=mysql --bind-address=0.0.0.0

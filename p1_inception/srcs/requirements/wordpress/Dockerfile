@@ -6,6 +6,7 @@ FROM debian:buster
 #The EXPOSE instruction does not actually publish the port. It functions as a type of documentation between the person who builds the image and the person who runs the container, about which ports are intended to be published.
 EXPOSE 9000
 
+
 RUN apt -y update && apt install php-fpm php-mysql -y && \
  apt-get -y update && apt-get install php-curl php-gd php-intl php-mbstring php-soap php-xml php-xmlrpc php-zip -y curl && \
  apt-get -q -y install mariadb-client \
@@ -16,17 +17,21 @@ RUN userdel www-data && useradd -u 82 www-data && \
     mkdir -p /var/www/html /var/run/php && \
     chown -R www-data:www-data /var/www/html /var/run/php && \
     # chown -R www-data:www-data /var/log/ && \
-    chmod -R 755 /var/www/html &&
-    chmod -R 777 /var/run/php
-    # chmod -R 755 /var/log/php/7.3/
+    chmod -R 755 /var/www/html && \
+    chmod -R 777 /var/run/php && \
+    chmod -R 777 /var/log/
 
-RUN wp core download --allow-root
+
+RUN wp core download --path='/var/www/html' --allow-root
 
 COPY ereali.conf /etc/php/7.3/fpm/pool.d/
-# COPY wp-config.php /var/www/wordpress/wp-config.php 
-USER www-data:www-data
 
-WORKDIR /var/www/html
+# COPY wp-config.php /var/www/html/
 
-COPY wp-script.sh /wp-script.sh
-CMD ["/wp-script.sh"] 
+# RUN chown -R www-data:www-data /var/www/html/wp-config.php
+
+# USER www-data:www-data
+
+
+COPY ./wp-script.sh /usr/bin/wp-script.sh
+CMD ["wp-script.sh"] 

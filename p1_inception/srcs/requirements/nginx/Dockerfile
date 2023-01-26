@@ -14,3 +14,4 @@ RUN	openssl req -newkey rsa:2048 -nodes -keyout /etc/nginx/ssl/key.pem -x509 -da
 # COPY nginx.conf /etc/nginx/conf.d/. Currently using volume to do it .
 
 CMD ["/usr/sbin/nginx", "-g", "daemon off;"]
+# -g allow to give the directive daemon off good practice for container

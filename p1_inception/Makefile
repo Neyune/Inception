@@ -7,6 +7,8 @@ clean:
 	docker-compose -f srcs/docker-compose.yml down --rmi all
 fclean: clean
 	docker system prune -fa
-	docker volume rm inception_mariadb_volume
+	docker volume rm inception_mariadb_volume inception_wordpress_volume
+fcleanv: fclean 
+	rm -rf /home/lara/data/mariadb_volume/* /home/lara/data/wordpress_volume/*
 
-.PHONY: all re clean fclean
+.PHONY: all re clean fclean fcleanv

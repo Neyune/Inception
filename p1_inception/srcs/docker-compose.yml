@@ -11,44 +11,49 @@ services:
       MYSQL_DATABASE: db_name
       MYSQL_USER: user_name
       MYSQL_PASSWORD: user_pass
+    healthcheck:
+      test: mysqladmin ping --host=localhost
+      interval: 5s
+      timeout: 1s
+      retries: 20
+      start_period: 5s
     restart: always
     networks:
         - inception
-  # wordpress:
-  #   depends_on:
-  #     - mysql
-  #   # build: requirements/wordpress
-  #   # image: wordpress
-  #   # # container_name: wordpress
-  #   # volumes:
-  #   #   - ./data/html:/var/www/html
-  #   # expose:
-  #   #   - "9000"
-  #   image: wordpress:php7.3-fpm-alpine
-  #   volumes:
-  #     - ./data/html:/var/www/html
-  #   environment:
-  #     WORDPRESS_DB_HOST: mysql
-  #     MYSQL_ROOT_PASSWORD: mysql_root_pass
-  #     WORDPRESS_DB_NAME: db_name
-  #     WORDPRESS_DB_USER: user_name
-  #     WORDPRESS_DB_PASSWORD: user_pass
-  #     WORDPRESS_TABLE_PREFIX: wp_
-  #   restart: always
-  #   networks:
-  #       - inception
-  # nginx:
-  #   build: requirements/nginx
-  #   image: nginx
-  #   volumes:
-  #     - ./requirements/nginx:/etc/nginx/conf.d
-  #     - ./data/html:/var/www/html
-  #   ports:
-  #     - "443:443"
-  #   depends_on:
-  #     - wordpress
-  #   networks:
-  #       - inception
+  wordpress:
+    depends_on:
+      mysql:
+        condition: service_healthy
+    build: requirements/wordpress
+    image: wordpress
+    # image: wordpress:php7.3-fpm-alpine
+    # container_name: wordpress
+    volumes:
+      - wordpress_volume:/var/www/html
+    expose:
+      - "9000"
+    environment:
+      WORDPRESS_DB_HOST: mysql
+      MYSQL_ROOT_PASSWORD: mysql_root_pass
+      WORDPRESS_DB_NAME: db_name
+      WORDPRESS_DB_USER: user_name
+      WORDPRESS_DB_PASSWORD: user_pass
+      WORDPRESS_TABLE_PREFIX: wp_
+    restart: always
+    networks:
+        - inception
+  nginx:
+    build: requirements/nginx
+    image: nginx
+    volumes:
+      - ./requirements/nginx:/etc/nginx/conf.d
+      - wordpress_volume:/var/www/html
+    ports:
+      - "443:443"
+    depends_on:
+      - wordpress
+    networks:
+        - inception
 
 networks:
   inception:
@@ -57,6 +62,13 @@ volumes:
   mariadb_volume:
     driver: local
     driver_opts:
-      type: none
-      device: /home/lara/data/mariadb_volume #path a modifier /!\
+      type: volume
+      device: /home/lara/data/mariadb_volume
+      o: bind
+  wordpress_volume:
+    driver: local
+    # name: wordpress_volume
+    driver_opts:
+      device: /home/lara/data/wordpress_volume
+      type: volume
       o: bind

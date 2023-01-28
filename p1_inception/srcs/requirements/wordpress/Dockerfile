@@ -17,7 +17,7 @@ RUN userdel www-data && useradd -u 82 www-data && \
     mkdir -p /var/www/html /var/run/php && \
     chown -R www-data:www-data /var/www/html /var/run/php && \
     # chown -R www-data:www-data /var/log/ && \
-    chmod -R 755 /var/www/html && \
+    chmod -R 775 /var/www/html && \
     chmod -R 777 /var/run/php && \
     chmod -R 777 /var/log/
 

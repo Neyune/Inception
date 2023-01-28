@@ -12,9 +12,9 @@ chmod 755 /tmp/tmp_file
 
 service mysql start
 
-cat << EOF > /tmp_file
+cat << EOF > /tmp/tmp_file
 CREATE DATABASE IF NOT EXISTS db_name DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-GRANT ALL ON *.* TO 'user_name'@'localhost' IDENTIFIED BY 'user_pass';
+GRANT ALL ON db_name.* TO 'user_name'@'%' IDENTIFIED BY 'user_pass';
 FLUSH PRIVILEGES;
 EOF
 mysql < /tmp/tmp_file

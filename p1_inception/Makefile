@@ -1,5 +1,6 @@
 all:
 	docker-compose -f srcs/docker-compose.yml -p inception up --build -d
+	# docker-compose -f srcs/docker-compose.yml --env-file srcs/.env -p inception up --build -d
 re: fclean all 
 
 clean:

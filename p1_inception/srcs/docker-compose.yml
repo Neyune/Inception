@@ -1,47 +1,31 @@
 version: '3'
 services:
   mysql:
-    # build: requirements/mariadb
+    env_file:
+     - .env
+    build: requirements/mariadb
     # image: mariadb
-    # container_name: mariadb
-    # volumes:
-    #   - /data/mysql:/var/lib/mysql
-    # expose:
-    #   - "3306"
-    image: mariadb
-    expose: [3306]
+    container_name: mariadb
     volumes:
-      - ./data/mysql:/var/lib/mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: mysql_root_pass
-      MYSQL_DATABASE: db_name
-      MYSQL_USER: user_name
-      MYSQL_PASSWORD: user_pass
+      - mariadb_volume:/var/lib/mysql
+    expose:
+      - "3306"
     restart: always
     networks:
         - inception
   wordpress:
+    env_file:
+     - .env
     depends_on:
       - mysql
     build: requirements/wordpress
     image: wordpress
-    # container_name: wordpress
-    volumes:
-      - ./data/html:/var/www/html
+    # image: wordpress:php7.3-fpm-alpine
+    container_name: wordpress
     expose:
       - "9000"
-    # image: wordpress:php7.3-fpm-alpine
-    # volumes:
-    #   - /data/html:/var/www/html
-    # depends_on:
-    #   - mysql
-    environment:
-      WORDPRESS_DB_HOST: mysql
-      MYSQL_ROOT_PASSWORD: mysql_root_pass
-      WORDPRESS_DB_NAME: db_name
-      WORDPRESS_DB_USER: user_name
-      WORDPRESS_DB_PASSWORD: user_pass
-      WORDPRESS_TABLE_PREFIX: wp_
+    volumes:
+      - wordpress_volume:/var/www/html
     restart: always
     networks:
         - inception
@@ -50,16 +34,41 @@ services:
     image: nginx
     volumes:
       - ./requirements/nginx:/etc/nginx/conf.d
-      - ./data/html:/var/www/html
+      - wordpress_volume:/var/www/html
     ports:
       - "443:443"
     depends_on:
       - wordpress
     networks:
         - inception
-
 networks:
   inception:
     driver: bridge
-# volumes:
-#   nginx: {} search global volume
+volumes:
+  wordpress_volume:
+    driver: local
+    # name: wordpress_volume
+    driver_opts:
+      device: /home/lara/data/wordpress_volume
+      type: volume
+      o: bind
+  mariadb_volume:
+    driver: local
+    # name: mariadb_volume
+    driver_opts:
+      device: /home/lara/data/mariadb_volume
+      type: volume
+      o: bind
+
+# environment:
+  # WORDPRESS_DB_HOST=${WORDPRESS_DB_HOST}
+  # MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+  # WORDPRESS_DB_NAME=${WORDPRESS_DB_NAME}
+  # WORDPRESS_DB_USER=${WORDPRESS_DB_USER}
+  # WORDPRESS_DB_PASSWORD=${WORDPRESS_DB_PASSWORD}
+  # WORDPRESS_TABLE_PREFIX=${WORDPRESS_TABLE_PREFIX}
+# environment:
+#   MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+#   MYSQL_DATABASE=${MYSQL_DATABASE}
+#   MYSQL_USER=${MYSQL_USER}
+#   MYSQL_PASSWORD=${MYSQL_PASSWORD}

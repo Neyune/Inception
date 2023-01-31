@@ -15,6 +15,7 @@ FLUSH PRIVILEGES;
 GRANT ALL ON ${DB_NAME}.* TO '${DB_USER}'@'%' IDENTIFIED BY '${DB_PWD}';
 FLUSH PRIVILEGES;
 EOF
+mysqld --user=mysql --bootstrap < tmp_file
+rm -rf tmp_file
 
-mysqld --user=mysql --bootstrap --verbose=0 --skip-name-resolve --skip-networking=0 < tmp_file
-exec mysqld --user=mysql --console --skip-name-resolve --skip-networking=0 $@
+exec mysqld --user=mysql --bind-address=0.0.0.0

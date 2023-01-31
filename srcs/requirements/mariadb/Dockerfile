@@ -3,11 +3,17 @@ FROM debian:buster
 
 EXPOSE 3306
 
-RUN apt-get -y update && apt-get -y install mariadb-server && \
-	  service mysql start && \
-	mysql -e "GRANT ALL ON *.* TO 'admin'@'localhost' IDENTIFIED BY 'password'; FLUSH PRIVILEGES; CREATE DATABASE wordpress; " \
+RUN apt-get -y update && apt-get -y install mariadb-server mariadb-client
 
+RUN mkdir -p /var/lib/mysql /var/run/mysqld ;\
+	chmod -R 775 /var/lib/mysql; \
+	chmod -R 755 /var/run/mysqld ; \
+    chown -R mysql:mysql /var/lib/mysql /var/run/mysqld
 
-COPY script.sh /var/.
+COPY	conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
 
-CMD ["sh", "/var/script.sh"]
+COPY tools/script.sh /usr/bin/.
+
+ENTRYPOINT ["script.sh"]
+
+CMD ["mysqld" ,"--user=mysql", "--bind-address=0.0.0.0"]

@@ -10,6 +10,6 @@ fclean: clean
 	docker system prune -fa
 	docker volume rm inception_mariadb_volume inception_wordpress_volume
 fcleanv: fclean 
-	sudo rm -rf /home/lara/data/mariadb_volume/* /home/lara/data/wordpress_volume/*
+	sudo rm -rf /home/ereali/data/mariadb_volume/* /home/ereali/data/wordpress_volume/*
 
 .PHONY: all re clean fclean fcleanv

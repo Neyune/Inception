@@ -14,6 +14,7 @@ COPY	conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
 
 COPY tools/script.sh /usr/bin/.
 
-ENTRYPOINT ["script.sh"]
+# ENTRYPOINT ["script.sh"]
 
-CMD ["mysqld" ,"--user=mysql", "--bind-address=0.0.0.0"]
+CMD ["bash", "/usr/bin/script.sh"]
+# CMD ["mysqld" ,"--user=mysql", "--bind-address=0.0.0.0"]

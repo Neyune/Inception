@@ -1,21 +1,20 @@
 #!/bin/bash
-touch /tmp/tmp_file
-chmod 755 /tmp/tmp_file
 
-service mysql start
-cat << EOF > /tmp/tmp_file
+# # creer un fichier temporaire dans lequel on met les instruction mysql
+# # les rediriger dans mysql
+
+touch tmp_file
+chmod 755 tmp_file
+
+cat << EOF > tmp_file
 CREATE DATABASE IF NOT EXISTS ${DB_NAME} DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-GRANT ALL ON ${DB_NAME}.* TO '${DB_USER}'@'%' IDENTIFIED BY '${DB_PWD}';
+USE ${DB_NAME};
+FLUSH PRIVILEGES;
 ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_ROOT_PWD}';
 FLUSH PRIVILEGES;
+GRANT ALL ON ${DB_NAME}.* TO '${DB_USER}'@'%' IDENTIFIED BY '${DB_PWD}';
+FLUSH PRIVILEGES;
 EOF
-# creer un fichier temporaire dans lequel on met les instruction mysql
-# les rediriger dans mysql
 
-mysql < /tmp/tmp_file
-
-service mysql stop
-
-rm -rf /tmp/tmp_file
-
-exec mysqld --user=mysql --bind-address=0.0.0.0
+mysqld --user=mysql --bootstrap --verbose=0 --skip-name-resolve --skip-networking=0 < tmp_file
+exec mysqld --user=mysql --console --skip-name-resolve --skip-networking=0 $@
